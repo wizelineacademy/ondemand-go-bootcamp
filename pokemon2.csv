@@ -1,0 +1,6 @@
+ID,Name,Form,Type1,Type2,Total,HP,Attack,Defense,Sp.Atk,Sp.Def,Speed,Generation
+1,Bulbasaur,,Grass,Poison,318,45,49,49,65,65,45,1
+2,Ivysaur,,Grass,Poison,405,60,62,63,80,80,60,1
+3,Venusaur,,Grass,Poison,525,80,82,83,100,100,80,1
+4,Charmander,,Fire,,309,39,52,43,60,50,65,1
+5,Charmeleon,,Fire,,405,58,64,58,80,65,80,1
