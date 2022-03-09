@@ -1,0 +1,14 @@
+.App {
+  background: linear-gradient(110deg, #ffffff 45%, #FE604B 15%, #FE604B 60%, #fe8546 15%);
+  /* Start #5cbcb0 from 0 and end at 5%, Start #fff at 5% and end at 15%, Start #5cbcb0 again at 15% and end at 100% */
+  /* background-size: 593.97px 593.97px; */
+  background-repeat: no-repeat; /* To avoid multiple instances */
+  height: 100vh;
+  width: 100%;
+}
+
+.pokebar{
+  background: linear-gradient(290deg, #303030 48.7%, #c7dcdd 15%, #c7dcdd 60%, #c7dcdd 15%);
+  background-repeat: no-repeat; /* To avoid multiple instances */
+  width: 100%;
+}
