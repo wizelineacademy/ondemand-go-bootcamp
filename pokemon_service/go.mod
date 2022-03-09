@@ -1,4 +1,4 @@
-module pas.com/v1
+module github.com/PasHdez/ondemand-go-bootcamp
 
 go 1.17
 

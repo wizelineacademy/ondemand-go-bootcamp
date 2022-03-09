@@ -3,11 +3,11 @@ package main
 import (
 	"net/http"
 
-	controller "pas.com/v1/controllers"
-	db "pas.com/v1/infrastructure/database"
-	service "pas.com/v1/infrastructure/service"
-	router "pas.com/v1/server"
-	repository "pas.com/v1/services"
+	controller "github.com/PasHdez/ondemand-go-bootcamp/controllers"
+	db "github.com/PasHdez/ondemand-go-bootcamp/infrastructure/database"
+	service "github.com/PasHdez/ondemand-go-bootcamp/infrastructure/service"
+	router "github.com/PasHdez/ondemand-go-bootcamp/server"
+	repository "github.com/PasHdez/ondemand-go-bootcamp/services"
 )
 
 func main() {

@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
-	service "pas.com/v1/infrastructure/service"
-	model "pas.com/v1/models"
+	service "github.com/PasHdez/ondemand-go-bootcamp/infrastructure/service"
+	model "github.com/PasHdez/ondemand-go-bootcamp/models"
 )
 
 type pokemonRepository struct {

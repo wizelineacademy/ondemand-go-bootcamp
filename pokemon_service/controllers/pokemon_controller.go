@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	repository "github.com/PasHdez/ondemand-go-bootcamp/services"
 	"github.com/julienschmidt/httprouter"
-	repository "pas.com/v1/services"
 )
 
 type controller struct {

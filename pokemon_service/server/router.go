@@ -3,8 +3,8 @@ package router
 import (
 	"net/http"
 
+	controller "github.com/PasHdez/ondemand-go-bootcamp/controllers"
 	"github.com/julienschmidt/httprouter"
-	controller "pas.com/v1/controllers"
 )
 
 type appRouter struct {

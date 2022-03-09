@@ -3,7 +3,7 @@ package service
 import (
 	"log"
 
-	db "pas.com/v1/infrastructure/database"
+	db "github.com/PasHdez/ondemand-go-bootcamp/infrastructure/database"
 )
 
 type service struct {
