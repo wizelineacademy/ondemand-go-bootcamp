@@ -10,17 +10,16 @@ type Store interface {
 	ReadData() ([][]string, error)
 }
 
-func NewStore(path *string) Store {
+func NewStore(path string) Store {
 	return &store{path}
 }
 
 type store struct {
-	path *string
+	path string
 }
 
-func (d *store) ReadData() ([][]string, error) {
-	p := *d.path
-	file, err := os.Open(p)
+func (d store) ReadData() ([][]string, error) {
+	file, err := os.Open(d.path)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -35,16 +34,3 @@ func (d *store) ReadData() ([][]string, error) {
 	}
 	return records, nil
 }
-
-// func ReadConcurrently() [][]string{
-// 	file, err := os.Open("data.csv")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 		return nil, err
-// 	}
-// 	defer file.Close()
-
-// 	reader := csv.NewReader(file)
-
-// 	records, err := reader.ReadAll()
-// }

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	repository "github.com/PasHdez/ondemand-go-bootcamp/services"
+	repository "github.com/PasHdez/ondemand-go-bootcamp/repository"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -27,7 +27,11 @@ func (c *controller) GetPokemons(w http.ResponseWriter, r *http.Request, ps http
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	poks := c.repository.GetPokemons()
+	poks, err := c.repository.GetPokemons()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	json.NewEncoder(w).Encode(poks)
 }
 
@@ -39,7 +43,11 @@ func (c *controller) GetPokemon(w http.ResponseWriter, r *http.Request, ps httpr
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	pokemon := c.repository.GetPokemon(idInt)
+	pokemon, err := c.repository.GetPokemon(idInt)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	json.NewEncoder(w).Encode(pokemon)
 }
 

@@ -8,7 +8,7 @@ type MockStore struct {
 	mock.Mock
 }
 
-func (m *MockStore) ReadData() ([][]string, error) {
+func (m MockStore) ReadData() ([][]string, error) {
 	ret := m.Called()
 
 	r0 := ret.Get(0).([][]string)
