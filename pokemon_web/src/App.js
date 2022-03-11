@@ -4,6 +4,8 @@ import PokemonSelector from "./components/PokemonSelector";
 import PokemonDetail from "./components/PokemonDetail";
 import { useEffect, useState, useRef } from "react";
 import { GetPokemons } from "./api/PokemonService";
+
+// App is a component that returns a simple pokedex app.
 function App() {
   const [pokemons, setPokemons] = useState([]);
   const [selectedPokemon, setSelectedPokemon] = useState(null);

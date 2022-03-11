@@ -1,26 +1,28 @@
 package repository
 
 import (
-	"errors"
-
 	service "github.com/PasHdez/ondemand-go-bootcamp/infrastructure/service"
 	model "github.com/PasHdez/ondemand-go-bootcamp/models"
 )
 
+// pokemonRepository is the implementation of PokemonRepository interface
 type pokemonRepository struct {
 	Service service.Service
 }
 
+// PokemonRepository is the interface that provides the pokemonRepository methods
 type PokemonRepository interface {
 	GetPokemons() ([]model.Pokemon, error)
 	GetPokemon(id int) (model.Pokemon, error)
 	GetPokemonsPars(pType string, items int, itemsPerWorker int) ([]model.Pokemon, error)
 }
 
+// NewPokemonRepository returns a new instance of PokemonRepository
 func NewPokemonRepository(s service.Service) PokemonRepository {
 	return &pokemonRepository{s}
 }
 
+// GetPokemons returns all pokemons
 func (p *pokemonRepository) GetPokemons() ([]model.Pokemon, error) {
 	pokemons, err := p.Service.GetAll()
 	if err != nil {
@@ -29,6 +31,7 @@ func (p *pokemonRepository) GetPokemons() ([]model.Pokemon, error) {
 	return pokemons, nil
 }
 
+// GetPokemon returns a pokemon by id
 func (p *pokemonRepository) GetPokemon(id int) (model.Pokemon, error) {
 	pokemon, err := p.Service.GetById(id)
 	if err != nil {
@@ -37,46 +40,11 @@ func (p *pokemonRepository) GetPokemon(id int) (model.Pokemon, error) {
 	return pokemon, nil
 }
 
-func (p *pokemonRepository) GetPokemonsOdd(items int, itemsPerWorker int) ([]model.Pokemon, error) {
-	pokemons, err := p.Service.GetAll()
-	if err != nil {
-		return nil, err
-	}
-
-	var result []model.Pokemon
-
-	for _, pokemon := range pokemons {
-		if pokemon.Id%2 != 0 {
-			result = append(result, pokemon)
-		}
-	}
-	return result, nil
-}
-
-func (p *pokemonRepository) GetPokemonsEven(items int, itemsPerWorker int) ([]model.Pokemon, error) {
-
-	pokemons, err := p.Service.GetAll()
-	if err != nil {
-		return nil, err
-	}
-
-	var result []model.Pokemon
-
-	for _, pokemon := range pokemons {
-		if pokemon.Id%2 == 0 {
-			result = append(result, pokemon)
-		}
-	}
-
-	return result, nil
-}
-
+// GetPokemonsPars returns a list of pokemons by type and quantity
 func (p *pokemonRepository) GetPokemonsPars(pType string, items int, itemsPerWorker int) ([]model.Pokemon, error) {
-	if pType == "odd" {
-		return p.GetPokemonsOdd(items, itemsPerWorker)
-	} else if pType == "even" {
-		return p.GetPokemonsEven(items, itemsPerWorker)
-	} else {
-		return nil, errors.New("error: Invalid type ")
+	pokemons, err := p.Service.GetByPars(pType, items, itemsPerWorker)
+	if err != nil {
+		return nil, err
 	}
+	return pokemons, nil
 }

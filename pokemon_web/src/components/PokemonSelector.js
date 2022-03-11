@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import pokeball from "../assets/img/pokeball.png";
 import pokeblack from "../assets/img/pokeball-black.png";
 
+// PokemonSelector component is used to display the list of pokemons.
 const PokemonSelector = ({ number, name, image, selected = true, onClick }) => {
   return (
     <div

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+
+// PokemonDetail component is used to display the details of a pokemon.
 const PokemonDetail = ({ image }) => {
   const [loaded, setLoaded] = useState(false);
   const handleLoadImage = () => {

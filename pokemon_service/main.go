@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	controller "github.com/PasHdez/ondemand-go-bootcamp/controllers"
@@ -10,8 +11,13 @@ import (
 	router "github.com/PasHdez/ondemand-go-bootcamp/server"
 )
 
+// path is the path to the csv file
 const path = "data.csv"
 
+// port is the port to listen
+const port = ":8090"
+
+// main is the entry point of the application
 func main() {
 	store := db.NewStore(path)
 	s, err := service.NewService(store)
@@ -21,6 +27,7 @@ func main() {
 	repository := repository.NewPokemonRepository(s)
 	controller := controller.NewPokemonController(repository)
 	appRouter := router.NewRoute(controller)
+	log.Printf("Listening on port %s", port)
 
-	http.ListenAndServe(":8090", appRouter.Router())
+	log.Fatal(http.ListenAndServe(port, appRouter.Router()))
 }
