@@ -115,7 +115,7 @@ items_per_workers: Is an Int and is the amount of valid items the worker should 
 
 > Important: this is the final deliverable, so all the requirements must be included.
 
-## Submitting the deliverables xxx
+## Submitting the deliverables
 
 For submitting your work, you should follow these steps:
 
