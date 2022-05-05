@@ -1,11 +1,15 @@
 package main
 
 import (
-	"log"
+	"net/http"
 
-	"github.com/GabrielRendonP/ondemand-go-bootcamp/helpers"
+	"github.com/GabrielRendonP/ondemand-go-bootcamp/controllers"
 )
 
 func main() {
-	log.Println(helpers.ReadPokemonData())
+	http.HandleFunc("/", controllers.Home)
+	http.HandleFunc("/pokemons", controllers.GetPokemons)
+	http.HandleFunc("/pokemon", controllers.GetPokemon)
+
+	_ = http.ListenAndServe(":8080", nil)
 }
