@@ -9,7 +9,7 @@ import (
 
 func GetPokemons(w http.ResponseWriter, r *http.Request) {
 
-	pokeList, err := helpers.ReadPokemonData()
+	pokeList, err := helpers.GetAllPokemons()
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
