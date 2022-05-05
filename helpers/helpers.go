@@ -1,62 +1,34 @@
 package helpers
 
 import (
-	"encoding/csv"
+	"fmt"
 	"log"
-	"net/http"
-	"os"
-	"strconv"
+
+	"github.com/GabrielRendonP/ondemand-go-bootcamp/repo"
 )
 
 type PokemonEntry struct {
-	Number   int64
+	Number   string
 	Name     string
 	PokeType string
 }
 
-func FetchCSV(url string) ([][]string, error) {
-	response, err := http.Get(url)
+func GetAllPokemons() ([]PokemonEntry, error) {
+	var lr = repo.NewLocalData()
+	data, err := lr.ReadCSVData()
+
 	if err != nil {
+		log.Panic("Could not read csv data")
 		return nil, err
-	}
-	defer response.Body.Close()
-	log.Println(response.Body)
-
-	csvReader := csv.NewReader(response.Body)
-	data, err := csvReader.ReadAll()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
-}
-
-func ReadPokemonData() []PokemonEntry {
-	var data [][]string
-
-	file, err := os.Open("./lib/pokemon.csv")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer file.Close()
-
-	csvReader := csv.NewReader(file)
-	data, err = csvReader.ReadAll()
-
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	var pokeList []PokemonEntry
-
 	for i, line := range data {
 		if i > 0 {
 			var pokemon PokemonEntry
 			for j, pokeAtt := range line {
 				if j == 0 {
-					pokemon.Number, _ = strconv.ParseInt(pokeAtt, 10, 0)
+					pokemon.Number = pokeAtt
 				} else if j == 1 {
 					pokemon.Name = pokeAtt
 				} else if j == 2 {
@@ -66,5 +38,22 @@ func ReadPokemonData() []PokemonEntry {
 			pokeList = append(pokeList, pokemon)
 		}
 	}
-	return pokeList
+	return pokeList, nil
+}
+
+func FindPokemon(id string) (PokemonEntry, error) {
+	pokeList, err := GetAllPokemons()
+
+	if err != nil {
+		return PokemonEntry{}, fmt.Errorf("error in data list")
+	}
+
+	for _, poke := range pokeList {
+		if poke.Number == id {
+			log.Println("Found!", poke)
+			return poke, nil
+		}
+	}
+
+	return PokemonEntry{}, fmt.Errorf("pokemon with id %s not found", id)
 }
