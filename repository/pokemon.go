@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"os"
 
 	"github.com/rmonroy-wiz/ondemand-go-bootcamp-2022/model"
@@ -10,11 +9,12 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
+//go:generate mockery --name PokemonRepository --filename pokemon.go --outpkg mocks --structname PokemonRepositoryMock --disable-version-string
 type PokemonRepository interface {
-	GetAll() ([]model.Pokemon, error)
-	GetByID(id int) (*model.Pokemon, error)
-	StoreToCSV(pokemonAPI model.PokemonAPI) (*model.Pokemon, error)
-	GetCSVDataInMemory() (map[int]model.Pokemon, error)
+	GetAll() ([]*model.PokemonDTO, *model.ErrorHandler)
+	GetByID(id int) (*model.PokemonDTO, *model.ErrorHandler)
+	StoreToCSV(pokemonAPI model.PokemonAPI) (*model.PokemonDTO, *model.ErrorHandler)
+	GetCSVDataInMemory() (map[int]model.PokemonCSV, *model.ErrorHandler)
 }
 
 // PokemonRepository structure for repository, contains the csv file's name
@@ -30,25 +30,25 @@ func NewPokemonRepository(csvFilename string) *pokemonRepository {
 }
 
 // GetAll get all pokemons from csv file
-func (p *pokemonRepository) GetAll() ([]model.Pokemon, error) {
+func (p *pokemonRepository) GetAll() ([]*model.PokemonDTO, *model.ErrorHandler) {
 	pokemonFile, err := p.openFile()
 	if err != nil {
 		return nil, err
 	}
-	pokemons := []model.Pokemon{}
+	pokemons := []model.PokemonCSV{}
 
 	if err := gocsv.UnmarshalFile(pokemonFile, &pokemons); err != nil {
-		return nil, errors.New("There was a problem parsing the csv file")
+		return nil, model.NewUnmarshalFileError(err.Error())
 	}
 	defer p.closeFile(pokemonFile)
-	return pokemons, nil
+	return mapper.PokemonsCSVToPokemonsDTO(pokemons), nil
 }
 
 // openFile open the csv file
-func (p pokemonRepository) openFile() (*os.File, error) {
+func (p pokemonRepository) openFile() (*os.File, *model.ErrorHandler) {
 	filePokemon, err := os.OpenFile(p.file, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
-		return nil, errors.New("There was a problem opening the csv file")
+		return nil, model.NewOpenFileError(err.Error())
 	}
 	return filePokemon, nil
 }
@@ -59,28 +59,29 @@ func (p pokemonRepository) closeFile(file *os.File) {
 }
 
 // GetByID get pokemon from csv by id
-func (p pokemonRepository) GetByID(id int) (*model.Pokemon, error) {
+func (p pokemonRepository) GetByID(id int) (*model.PokemonDTO, *model.ErrorHandler) {
 	pokemons, err := p.GetAll()
 	if err != nil {
 		return nil, err
 	}
 	for _, pokemon := range pokemons {
 		if pokemon.Id == id {
-			return &pokemon, nil
+			return pokemon, nil
 		}
 	}
-	return nil, errors.New("the pokemon does not exist")
+
+	return nil, model.NewNotFoundPokemonError(id)
 }
 
 // StoreToCSV store pokemon to csv
-func (p pokemonRepository) StoreToCSV(pokemonAPI model.PokemonAPI) (*model.Pokemon, error) {
+func (p pokemonRepository) StoreToCSV(pokemonAPI model.PokemonAPI) (*model.PokemonDTO, *model.ErrorHandler) {
 	pokemonMap, err := p.GetCSVDataInMemory()
 	if err != nil {
 		return nil, err
 	}
-	pokemon := mapper.PokemonAPItoPokemon(pokemonAPI)
+	pokemon := mapper.PokemonAPItoPokemonCSV(pokemonAPI)
 	pokemonMap[pokemon.Id] = pokemon
-	pokemons := make([]model.Pokemon, 0)
+	pokemons := make([]model.PokemonCSV, 0)
 	for _, pokemonObj := range pokemonMap {
 		pokemons = append(pokemons, pokemonObj)
 	}
@@ -89,21 +90,21 @@ func (p pokemonRepository) StoreToCSV(pokemonAPI model.PokemonAPI) (*model.Pokem
 		return nil, err
 	}
 	if err := gocsv.MarshalFile(&pokemons, pokemonFile); err != nil {
-		return nil, errors.New("There was a problem accesing to csv file")
+		return nil, model.NewAccesingCSVFileError(err.Error())
 	}
 	p.closeFile(pokemonFile)
-	return &pokemon, nil
+	return mapper.PokemonAPIToPokemonDTO(pokemonAPI), nil
 }
 
 // getCSVDataInMemory store pokemons from csv to memory
-func (p pokemonRepository) GetCSVDataInMemory() (map[int]model.Pokemon, error) {
-	pokemonMap := make(map[int]model.Pokemon)
+func (p pokemonRepository) GetCSVDataInMemory() (map[int]model.PokemonCSV, *model.ErrorHandler) {
+	pokemonMap := make(map[int]model.PokemonCSV)
 	pokemons, err := p.GetAll()
 	if err != nil {
 		return nil, err
 	}
 	for _, pokemon := range pokemons {
-		pokemonMap[pokemon.Id] = pokemon
+		pokemonMap[pokemon.Id] = mapper.PokemonDTOToPokemonCSV(pokemon)
 	}
 	return pokemonMap, nil
 }

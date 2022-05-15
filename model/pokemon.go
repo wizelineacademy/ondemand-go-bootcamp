@@ -1,6 +1,6 @@
 package model
 
-type Pokemon struct {
+type PokemonCSV struct {
 	Id             int    `csv:"ID"`
 	Name           string `csv:"English"`
 	Height         int    `csv:"Height"`

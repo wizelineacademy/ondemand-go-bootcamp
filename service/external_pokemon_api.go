@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,8 +9,9 @@ import (
 	"github.com/rmonroy-wiz/ondemand-go-bootcamp-2022/model"
 )
 
+//go:generate mockery --name ExternalPokemonAPI --filename external_pokemon_api.go --outpkg mocks --structname ExternalPokemonAPIMock --disable-version-string
 type ExternalPokemonAPI interface {
-	GetPokemonFromAPI(id int) (*model.PokemonAPI, error)
+	GetPokemonFromAPI(id int) (*model.PokemonAPI, *model.ErrorHandler)
 }
 
 type externalPokemonAPI struct {
@@ -24,17 +24,17 @@ func NewExternalPokemonAPI() ExternalPokemonAPI {
 	}
 }
 
-func (s externalPokemonAPI) GetPokemonFromAPI(id int) (*model.PokemonAPI, error) {
+func (s externalPokemonAPI) GetPokemonFromAPI(id int) (*model.PokemonAPI, *model.ErrorHandler) {
 	response, err := http.Get(fmt.Sprintf("%s/%d", s.url, id))
 	if err != nil {
-		return nil, err
+		return nil, model.NewPokemonAPIIsNotReached(err.Error())
 	}
 	if response.StatusCode == http.StatusNotFound {
-		return nil, errors.New("The Pokemon does not exist")
+		return nil, model.NewGetPokemonFromAPINotFoundError(id)
 	}
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, model.NewUnmarshalResponseBodyExternalService(err.Error())
 	}
 	var pokemonAPI *model.PokemonAPI
 	json.Unmarshal(responseData, &pokemonAPI)

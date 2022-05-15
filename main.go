@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rmonroy-wiz/ondemand-go-bootcamp-2022/router/v1"
 	"github.com/spf13/viper"
@@ -20,5 +22,5 @@ func main() {
 
 	r = router.PokemonRoutes(r)
 
-	r.Run()
+	r.Run(fmt.Sprintf(":%s", viper.Get("PORT").(string)))
 }

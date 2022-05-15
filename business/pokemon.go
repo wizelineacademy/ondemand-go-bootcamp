@@ -8,10 +8,11 @@ import (
 	"github.com/rmonroy-wiz/ondemand-go-bootcamp-2022/service"
 )
 
+//go:generate mockery --name PokemonBusiness --filename pokemon.go --outpkg mocks --structname PokemonBusinessMock --disable-version-string
 type PokemonBusiness interface {
-	GetAll() ([]model.Pokemon, error)
-	GetByID(id int) (*model.Pokemon, error)
-	StoreByID(id int) (*model.Pokemon, error)
+	GetAll() ([]*model.PokemonDTO, *model.ErrorHandler)
+	GetByID(id int) (*model.PokemonDTO, *model.ErrorHandler)
+	StoreByID(id int) (*model.PokemonDTO, *model.ErrorHandler)
 }
 
 // PokemonService dependencies from Pokemon service
@@ -29,8 +30,8 @@ func NewPokemonBusiness(repository repository.PokemonRepository, service service
 }
 
 // GetAll get all pokemons from repository
-func (s pokemonBusiness) GetAll() ([]model.Pokemon, error) {
-	log.Println("Enter to get all pokemons!!!")
+func (s pokemonBusiness) GetAll() ([]*model.PokemonDTO, *model.ErrorHandler) {
+	log.Println("enter to get all pokemons!!!")
 	pokemons, err := s.pokemonRepository.GetAll()
 	if err != nil {
 		return nil, err
@@ -39,8 +40,8 @@ func (s pokemonBusiness) GetAll() ([]model.Pokemon, error) {
 }
 
 // GetByID get pokemon by his id
-func (s pokemonBusiness) GetByID(id int) (*model.Pokemon, error) {
-	log.Println("Enter to get pokemon by id!!!")
+func (s pokemonBusiness) GetByID(id int) (*model.PokemonDTO, *model.ErrorHandler) {
+	log.Println("enter to get pokemon by id!!!")
 	pokemon, err := s.pokemonRepository.GetByID(id)
 	if err != nil {
 		return nil, err
@@ -49,15 +50,15 @@ func (s pokemonBusiness) GetByID(id int) (*model.Pokemon, error) {
 }
 
 // StoreByID get pokemon by his id
-func (s pokemonBusiness) StoreByID(id int) (*model.Pokemon, error) {
-	log.Println("Enter to search and store pokemon by id!!!")
+func (s pokemonBusiness) StoreByID(id int) (*model.PokemonDTO, *model.ErrorHandler) {
+	log.Println("enter to search and store pokemon by id!!!")
 	pokemonAPI, err := s.serviceAPI.GetPokemonFromAPI(id)
 	if err != nil {
 		return nil, err
 	}
-	pokemon, err := s.pokemonRepository.StoreToCSV(*pokemonAPI)
+	pokemon, errRepository := s.pokemonRepository.StoreToCSV(*pokemonAPI)
 	if err != nil {
-		return nil, err
+		return nil, errRepository
 	}
 	return pokemon, nil
 }

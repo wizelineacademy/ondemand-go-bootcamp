@@ -2,7 +2,7 @@ package model
 
 type PokemonAPI struct {
 	Id             int        `json:"id"`
-	BaseExperience int        `json:"base_experience"`
+	BaseExperience int        `json:"baseExperience"`
 	Height         int        `json:"height"`
 	Weight         int        `json:"weight"`
 	Name           string     `json:"name"`

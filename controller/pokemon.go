@@ -6,14 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rmonroy-wiz/ondemand-go-bootcamp-2022/business"
+	"github.com/rmonroy-wiz/ondemand-go-bootcamp-2022/model"
 )
 
 type pokemon struct {
 	pokemonBusiness business.PokemonBusiness
-}
-
-type Pokemon interface {
-	GetAllPokemons()
+	baseController
 }
 
 func NewPokemonController(pokemonBusiness business.PokemonBusiness) *pokemon {
@@ -21,40 +19,46 @@ func NewPokemonController(pokemonBusiness business.PokemonBusiness) *pokemon {
 		pokemonBusiness: pokemonBusiness,
 	}
 }
-func (p pokemon) GetAllPokemons(c *gin.Context) {
-	pokemons, err := p.pokemonBusiness.GetAll()
+
+// Get all pokemons
+func (ctrl pokemon) GetAllPokemons(c *gin.Context) {
+	pokemons, err := ctrl.pokemonBusiness.GetAll()
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		ctrl.ResponseError(c, err)
 	}
 
-	c.JSON(http.StatusOK, pokemons)
+	ctrl.ResponseSucess(c, http.StatusOK, pokemons)
 }
 
 // GetPokemonByID get pokemon based on ID
-func (p pokemon) GetPokemonByID(c *gin.Context) {
+func (ctrl pokemon) GetPokemonByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("pokemonId"))
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		ctrl.ResponseError(c, model.NewURLParameterDoesNotFound("pokemonId"))
+		return
 	}
-	pokemon, err := p.pokemonBusiness.GetByID(id)
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+	pokemon, errBusiness := ctrl.pokemonBusiness.GetByID(id)
+	if errBusiness != nil {
+		ctrl.ResponseError(c, errBusiness)
+		return
 	}
 
-	c.JSON(http.StatusOK, pokemon)
+	ctrl.ResponseSucess(c, http.StatusOK, pokemon)
 }
 
 // StorePokemonByID get pokemon based on ID
-func (p pokemon) StorePokemonByID(c *gin.Context) {
+func (ctrl pokemon) StorePokemonByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("pokemonId"))
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		ctrl.ResponseError(c, model.NewURLParameterDoesNotFound("pokemonId"))
+		return
 	}
-	pokemon, err := p.pokemonBusiness.StoreByID(id)
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+	pokemon, errBusiness := ctrl.pokemonBusiness.StoreByID(id)
+	if errBusiness != nil {
+		ctrl.ResponseError(c, errBusiness)
+		return
 	}
 
-	c.JSON(http.StatusOK, pokemon)
+	ctrl.ResponseSucess(c, http.StatusCreated, pokemon)
 }
