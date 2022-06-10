@@ -8,6 +8,7 @@ import (
 	"lolidelgado/github-users/usecase"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 )
 
@@ -23,10 +24,12 @@ func main() {
 	httpRender := render.New()
 	usersController := controller.NewGithubUser(httpRender, githubUserUseCase)
 
+	httpRouter := mux.NewRouter()
 	delivery.Setup(
 		usersController,
+		httpRouter,
 	)
 
 	//start server
-	log.Fatal(http.ListenAndServe(":7000", nil))
+	log.Fatal(http.ListenAndServe(":7000", httpRouter))
 }

@@ -2,9 +2,12 @@ package delivery
 
 import (
 	"lolidelgado/github-users/controller"
-	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-func Setup(githubUser *controller.GithubUser) {
-	http.HandleFunc("/github-users", githubUser.GithubUsersHandler)
+func Setup(githubUserHandler *controller.GithubUser, router *mux.Router) {
+
+	router.HandleFunc("/github-users", githubUserHandler.GetGithubUsers)
+	router.HandleFunc("/github-users/{id}", githubUserHandler.GetGithubUserById)
 }

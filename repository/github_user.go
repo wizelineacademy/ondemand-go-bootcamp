@@ -34,6 +34,25 @@ func (g *GithubUser) FetchAll() ([]models.GithubUser, error) {
 	return arrayToGithubUser(lines), nil
 }
 
+func (g *GithubUser) GetById(id int) ([]models.GithubUser, error) {
+	lines, err := g.readCsv()
+	if err != nil {
+		return []models.GithubUser{}, err
+	}
+	var user [][]string
+	for _, line := range lines {
+		if idFromFile, _ := strconv.Atoi(line[0]); idFromFile == id {
+			user = append(user, line)
+			break
+		}
+	}
+	if len(user) > 0 {
+		return arrayToGithubUser(user), nil
+	} else {
+		return []models.GithubUser{}, nil
+	}
+}
+
 func (g *GithubUser) readCsv() ([][]string, error) {
 	//csv reader
 	file, err := os.Open(staticFilesPath + g.githubUserCsvFileName)
