@@ -70,14 +70,7 @@ func arrayToGithubUser(lines [][]string) []models.GithubUser {
 		if err != nil {
 			publicRepos = 0
 		}
-		data := models.GithubUser{
-			Id:          id,
-			Login:       line[1],
-			Name:        line[2],
-			Company:     line[3],
-			Bio:         line[4],
-			PublicRepos: publicRepos,
-		}
+		data := models.NewGithubUser(id, line[1], line[2], line[3], line[4], publicRepos)
 		githubUsers = append(githubUsers, data)
 	}
 	return githubUsers
