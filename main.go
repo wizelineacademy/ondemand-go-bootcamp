@@ -1,30 +1,20 @@
 package main
 
 import (
-	"encoding/csv"
 	"log"
 	"lolidelgado/github-users/controller"
 	"lolidelgado/github-users/delivery"
 	"lolidelgado/github-users/repository"
 	"lolidelgado/github-users/usecase"
 	"net/http"
-	"os"
 
 	"github.com/unrolled/render"
 )
 
 func main() {
-	//csv reader
-	file, err := os.Open("static/github_users.csv")
-	if err != nil {
-		log.Fatal("Invalid file: ", err)
-	}
-	defer file.Close()
-
-	csvReader := csv.NewReader(file)
-
+	const fileName = "github_users.csv"
 	//repository
-	githubUserRepo := repository.NewGithubUser(csvReader)
+	githubUserRepo := repository.NewGithubUser(fileName)
 
 	//useCase
 	githubUserUseCase := usecase.NewGithubUser(githubUserRepo)

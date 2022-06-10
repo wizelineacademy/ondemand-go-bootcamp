@@ -1,3 +1,4 @@
+//Package repository container the fuctions to handle githubusers model information
 package repository
 
 import (
@@ -5,22 +6,23 @@ import (
 	"io"
 	"log"
 	"lolidelgado/github-users/models"
+	"os"
 	"strconv"
 )
 
-//aqui va a tener las fuciones para regresar la informacion de los githubusers, como un crud si fuera necesario
-
 type GithubUser struct {
-	githubUserCsv *csv.Reader
+	githubUserCsvFileName string
 }
 
 type IGithubUserRepository interface {
 	FetchAll() ([]models.GithubUser, error)
 }
 
-func NewGithubUser(githubUserCsv *csv.Reader) *GithubUser {
+const staticFilesPath = "static/"
+
+func NewGithubUser(fileName string) *GithubUser {
 	return &GithubUser{
-		githubUserCsv,
+		fileName,
 	}
 }
 
@@ -33,9 +35,17 @@ func (g *GithubUser) FetchAll() ([]models.GithubUser, error) {
 }
 
 func (g *GithubUser) readCsv() ([][]string, error) {
+	//csv reader
+	file, err := os.Open(staticFilesPath + g.githubUserCsvFileName)
+	if err != nil {
+		log.Fatal("Invalid file: ", err)
+	}
+	defer file.Close()
+	csvReader := csv.NewReader(file)
+
 	var lines [][]string
 	for {
-		record, err := g.githubUserCsv.Read()
+		record, err := csvReader.Read()
 		if err == io.EOF {
 			break
 		}
