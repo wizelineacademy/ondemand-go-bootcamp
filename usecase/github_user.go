@@ -1,12 +1,11 @@
+//Package usecase processes the information from repository, making any needed calculations, data transformation, etc.
+//If it recieved data it's from controllers, coming from delivery layer
 package usecase
 
 import (
 	"lolidelgado/github-users/models"
 	"lolidelgado/github-users/repository"
 )
-
-//aqui se va a procesar la informacion que lea del repositorio, calculos, o transformacion de datos
-//si recibe datos son desde la capa de delivery
 
 type GithubUserUseCase struct {
 	githubUserRepo *repository.GithubUser
