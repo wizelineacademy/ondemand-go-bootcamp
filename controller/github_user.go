@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"encoding/json"
+	"fmt"
 	"lolidelgado/github-users/usecase"
 	"net/http"
 	"strconv"
@@ -24,9 +24,10 @@ func (c *GithubUser) GetGithubUsers(rw http.ResponseWriter, req *http.Request) {
 	case http.MethodGet:
 		githubUsers, err := c.g.FetchAll()
 		if err != nil {
-			panic(err)
+			c.render.Text(rw, http.StatusInternalServerError, fmt.Sprintf("This is not fine🔥\nAnd the reason is: %s", err))
+			return
 		}
-		json.NewEncoder(rw).Encode(githubUsers)
+		c.render.JSON(rw, http.StatusOK, githubUsers)
 	}
 
 }
@@ -36,8 +37,9 @@ func (c *GithubUser) GetGithubUserById(rw http.ResponseWriter, req *http.Request
 	id := vars["id"]
 	numericId, err := strconv.Atoi(id)
 	if err != nil {
-		panic(err)
+		c.render.Text(rw, http.StatusBadRequest, "invalid id")
+		return
 	}
 	githubUser, err := c.g.GetById(numericId)
-	json.NewEncoder(rw).Encode(githubUser)
+	c.render.JSON(rw, http.StatusOK, githubUser)
 }

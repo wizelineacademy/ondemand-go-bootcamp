@@ -29,7 +29,7 @@ func NewGithubUser(fileName string) *GithubUser {
 func (g *GithubUser) FetchAll() ([]models.GithubUser, error) {
 	lines, err := g.readCsv()
 	if err != nil {
-		return []models.GithubUser{}, err
+		return nil, err
 	}
 	return arrayToGithubUser(lines), nil
 }
@@ -37,7 +37,7 @@ func (g *GithubUser) FetchAll() ([]models.GithubUser, error) {
 func (g *GithubUser) GetById(id int) ([]models.GithubUser, error) {
 	lines, err := g.readCsv()
 	if err != nil {
-		return []models.GithubUser{}, err
+		return nil, err
 	}
 	var user [][]string
 	for _, line := range lines {
@@ -57,7 +57,7 @@ func (g *GithubUser) readCsv() ([][]string, error) {
 	//csv reader
 	file, err := os.Open(staticFilesPath + g.githubUserCsvFileName)
 	if err != nil {
-		log.Fatal("Invalid file: ", err)
+		return nil, err
 	}
 	defer file.Close()
 	csvReader := csv.NewReader(file)
