@@ -41,5 +41,9 @@ func (c *GithubUser) GetGithubUserById(rw http.ResponseWriter, req *http.Request
 		return
 	}
 	githubUser, err := c.g.GetById(numericId)
+	if err != nil {
+		c.render.Text(rw, http.StatusInternalServerError, fmt.Sprintf("This is not fine🔥\nAnd the reason is: %s", err))
+		return
+	}
 	c.render.JSON(rw, http.StatusOK, githubUser)
 }
